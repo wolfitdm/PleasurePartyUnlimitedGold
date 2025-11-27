@@ -17,4 +17,4 @@ https://www.jetbrains.com/decompiler/download/?section=web-installer
 looks pictures
 
 ![howtoinstall](https://github.com/user-attachments/assets/59afb2f1-9f3b-4f9f-80c7-4c51b352df7b)
-!howtoinstall(https://github.com/user-attachments/assets/89186126-9a14-4c00-9099-d115d615a7e8)
+![howtoinstall](https://github.com/user-attachments/assets/89186126-9a14-4c00-9099-d115d615a7e8)
