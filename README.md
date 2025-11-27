@@ -14,6 +14,8 @@ also important is JetBrains DotPeek to open the assembly Assembly-Csharp.dll
 
 https://www.jetbrains.com/decompiler/download/?section=web-installer
 
+you can find all important Class Objects like Global_Objects_UW and Character_Clothes_UW and LevelManager_UW in the Root Namespace
+
 looks pictures
 
 ![howtoinstall](https://github.com/user-attachments/assets/59afb2f1-9f3b-4f9f-80c7-4c51b352df7b)
