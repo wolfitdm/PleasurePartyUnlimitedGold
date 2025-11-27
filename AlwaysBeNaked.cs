@@ -24,7 +24,7 @@ namespace AlwaysBeNaked
 
         public static Type MyGetType(string originalClassName)
         {
-            return Type.GetType(originalClassName+",Assembly-CSharp");
+            return Type.GetType(originalClassName + ",Assembly-CSharp");
         }
 
         public static Type oldMyGetType(string originalClassName)
@@ -158,6 +158,30 @@ namespace AlwaysBeNaked
                 {
                     _this.hasPantsNow = true;
                     _this.hasShirtNow = true;
+                    _this.hasBraNow = true;
+                    _this.hasPantiesNow = true;
+                    _this.hasShoesNow = true;
+                    _this.hasHatNow = true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                Logger.LogInfo(e.ToString());
+            }
+
+            try
+            {
+                Character_Clothes_UW _this = (Character_Clothes_UW)__instance;
+                bool isPlayer = (bool)Character_Clothes_UW_getVar(_this, "isPlayer");
+                if (isPlayer)
+                {
+                    Character_Clothes_UW_setProperty(_this, "hasPantsNow", true);
+                    Character_Clothes_UW_setProperty(_this, "hasShirtNow", true);
+                    Character_Clothes_UW_setProperty(_this, "hasBraNow", true);
+                    Character_Clothes_UW_setProperty(_this, "hasPantiesNow", true);
+                    Character_Clothes_UW_setProperty(_this, "hasShoesNow", true);
+                    Character_Clothes_UW_setProperty(_this, "hasHatNow", true);
                 }
             }
             catch (Exception e)
@@ -560,7 +584,7 @@ namespace AlwaysBeNaked
             GlobalObjects_UW_setVar("eyesOverHairs", true);
             GlobalObjects_UW_setVar("pregnantBelly", true);
             GlobalObjects_UW_setVar("disablePregnancy", true);
-            GlobalObjects_UW_setVar("hidePregnantBelly", true);;
+            GlobalObjects_UW_setVar("hidePregnantBelly", true); ;
             GlobalObjects_UW_setVarEnum("forceDickType", "EDickType.None");
 
             Console.WriteLine("Load cctor from GlobalObjects_UW");
@@ -631,7 +655,7 @@ namespace AlwaysBeNaked
                 Logger.LogInfo(message);
                 return null;
             }
-            
+
             return null;
         }
 
@@ -644,24 +668,25 @@ namespace AlwaysBeNaked
                 return null;
             }
 
-            if (typeValue.Length == 0) { 
-                return null; 
+            if (typeValue.Length == 0)
+            {
+                return null;
             }
 
-            if (!typeValue.Contains(""+separator))
+            if (!typeValue.Contains("" + separator))
             {
                 return null;
             }
 
             // Split the string
             string[] parts = typeValue.Split(separator);
-            if(parts.Length < 2)
+            if (parts.Length < 2)
             {
                 return null;
             }
 
             string lastpath = parts[1];
-            
+
             for (int i = 2; i < parts.Length; i++)
             {
                 lastpath = lastpath + "." + parts[i];
@@ -676,7 +701,7 @@ namespace AlwaysBeNaked
             };
         }
 
-        static void GlobalObjects_UW_setVarEnum(string field, string enumvalue)
+        static void UW_setVarEnum(object obj, string className, string field, BindingFlags flags, string enumvalue)
         {
             string[] enumparts = getEnumString(enumvalue);
             string message = null;
@@ -700,12 +725,11 @@ namespace AlwaysBeNaked
                 return;
             }
 
-            GlobalObjects_UW_setVar(field, value);
+            UW_setVar(obj, className, field, flags, value);
         }
 
-        static void GlobalObjects_UW_setVar(string field, object value)
+        static void UW_setVar(object obj, string className, string field, BindingFlags flags, object value)
         {
-            string className = "GlobalObjects_UW";
             Type myType1 = MyGetType(className);
             if (myType1 == null)
             {
@@ -717,7 +741,7 @@ namespace AlwaysBeNaked
                 // Get the FieldInfo for the public static field
                 FieldInfo fieldInfo = myType1.GetField(
                     field,
-                    BindingFlags.Public | BindingFlags.Static
+                    flags
                 );
 
                 if (fieldInfo == null)
@@ -725,7 +749,7 @@ namespace AlwaysBeNaked
                     throw new Exception("field " + field + " not found, the dev have removed it!");
                 }
 
-                fieldInfo.SetValue(null, value);
+                fieldInfo.SetValue(obj, value);
             }
             catch (Exception e)
             {
@@ -734,9 +758,38 @@ namespace AlwaysBeNaked
             }
         }
 
-        static object GlobalObjects_UW_getVar(string field)
+        static void UW_setProperty(object obj, string className, string field, BindingFlags flags, object value)
         {
-            string className = "GlobalObjects_UW";
+            Type myType1 = MyGetType(className);
+            if (myType1 == null)
+            {
+                throw new Exception("class " + className + " not found, the dev have removed it!");
+            }
+
+            try
+            {
+                // Get the FieldInfo for the public static field
+                PropertyInfo fieldInfo = myType1.GetProperty(
+                    field,
+                    flags
+                );
+
+                if (fieldInfo == null)
+                {
+                    throw new Exception("field " + field + " not found, the dev have removed it!");
+                }
+
+                fieldInfo.SetValue(obj, value, null);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                Logger.LogInfo(e.ToString());
+            }
+        }
+
+        static object UW_getVar(object obj, string className, string field, BindingFlags flags)
+        {
             Type myType1 = MyGetType(className);
             if (myType1 == null)
             {
@@ -748,7 +801,7 @@ namespace AlwaysBeNaked
                 // Get the FieldInfo for the public static field
                 FieldInfo fieldInfo = myType1.GetField(
                     field,
-                    BindingFlags.Public | BindingFlags.Static
+                    flags
                 );
 
                 if (fieldInfo == null)
@@ -756,7 +809,7 @@ namespace AlwaysBeNaked
                     throw new Exception("field " + field + " not found, the dev have removed it!");
                 }
 
-                return fieldInfo.GetValue(null);
+                return fieldInfo.GetValue(obj);
             }
             catch (Exception e)
             {
@@ -764,6 +817,89 @@ namespace AlwaysBeNaked
                 Logger.LogInfo(e.ToString());
                 return null;
             }
+        }
+
+        static object UW_getProperty(object obj, string className, string field, BindingFlags flags)
+        {
+            Type myType1 = MyGetType(className);
+            if (myType1 == null)
+            {
+                throw new Exception("class " + className + " not found, the dev have removed it!");
+            }
+
+            try
+            {
+                // Get the FieldInfo for the public static field
+                PropertyInfo fieldInfo = myType1.GetProperty(
+                    field,
+                    flags
+                );
+
+                if (fieldInfo == null)
+                {
+                    throw new Exception("field " + field + " not found, the dev have removed it!");
+                }
+
+                return fieldInfo.GetValue(obj, null);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                Logger.LogInfo(e.ToString());
+                return null;
+            }
+        }
+
+        static void GlobalObjects_UW_setVar(string field, object value)
+        {
+            string className = "GlobalObjects_UW";
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
+            object obj = null;
+            UW_setVar(obj, className, field, flags, value);
+        }
+
+        static object GlobalObjects_UW_getVar(string field)
+        {
+            string className = "GlobalObjects_UW";
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
+            object obj = null;
+            return UW_getVar(obj, className, field, flags);
+        }
+
+        static void GlobalObjects_UW_setVarEnum(string field, string enumvalue)
+        {
+            string className = "GlobalObjects_UW";
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
+            object obj = null;
+            UW_setVarEnum(obj, className, field, flags, enumvalue);
+        }
+
+        static void Character_Clothes_UW_setVar(object obj, string field, object value)
+        {
+            string className = "Character_Clothes_UW";
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+            UW_setVar(obj, className, field, flags, value);
+        }
+
+        static object Character_Clothes_UW_getVar(object obj, string field)
+        {
+            string className = "Character_Clothes_UW";
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+            return UW_getVar(obj, className, field, flags);
+        }
+
+        static void Character_Clothes_UW_setProperty(object obj, string field, object value)
+        {
+            string className = "Character_Clothes_UW";
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+            UW_setProperty(obj, className, field, flags, value);
+        }
+
+        static object Character_Clothes_UW_getProperty(object obj, string field)
+        {
+            string className = "Character_Clothes_UW";
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+            return UW_getProperty(obj, className, field, flags);
         }
     }
 }

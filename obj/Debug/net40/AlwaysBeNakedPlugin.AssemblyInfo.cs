@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AlwaysBeNaked")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dbd18ee48036209aa8f1f82b725da3780b371f20")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34ba44a2c0c94ae6d9d493d7ad900499fd9f52b7")]
 [assembly: System.Reflection.AssemblyProductAttribute("You can overall be naked!")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AlwaysBeNaked")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
