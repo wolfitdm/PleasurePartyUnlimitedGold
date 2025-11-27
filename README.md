@@ -1,4 +1,4 @@
-need net franework 4.0
+need net framework 4.0
 
 https://www.microsoft.com/en-us/download/details.aspx?id=17718&msockid=0f1bfd8f77466261080aeb2b765f6342
 
