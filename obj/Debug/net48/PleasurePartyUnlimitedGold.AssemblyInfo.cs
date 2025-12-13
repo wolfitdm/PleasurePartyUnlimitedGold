@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PleasurePartyUnlimitedGold")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4096f1c486407321017247b2cf1bc2bf1e06b5da")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b131fc4e545c09898b98e0d6989b34b25ce99f0f")]
 [assembly: System.Reflection.AssemblyProductAttribute("You have unlimited gold!")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PleasurePartyUnlimitedGold")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
