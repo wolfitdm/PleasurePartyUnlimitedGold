@@ -1,0 +1,7 @@
+C:\Users\CdemyTeilnehmer\Downloads\PleasurePartyJune17th2022version\Pleasure Party\AlwaysBeNakedPlugin\obj\Release\net40\PleasurePartyUnlimitedGold.csproj.AssemblyReference.cache
+C:\Users\CdemyTeilnehmer\Downloads\PleasurePartyJune17th2022version\Pleasure Party\AlwaysBeNakedPlugin\obj\Release\net40\MyPluginInfo.cs
+C:\Users\CdemyTeilnehmer\Downloads\PleasurePartyJune17th2022version\Pleasure Party\AlwaysBeNakedPlugin\obj\Release\net40\PleasurePartyUnlimitedGold.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\CdemyTeilnehmer\Downloads\PleasurePartyJune17th2022version\Pleasure Party\AlwaysBeNakedPlugin\obj\Release\net40\PleasurePartyUnlimitedGold.AssemblyInfoInputs.cache
+C:\Users\CdemyTeilnehmer\Downloads\PleasurePartyJune17th2022version\Pleasure Party\AlwaysBeNakedPlugin\obj\Release\net40\PleasurePartyUnlimitedGold.AssemblyInfo.cs
+C:\Users\CdemyTeilnehmer\Downloads\PleasurePartyJune17th2022version\Pleasure Party\AlwaysBeNakedPlugin\obj\Release\net40\PleasurePartyUnlimitedGold.csproj.CoreCompileInputs.cache
+C:\Users\CdemyTeilnehmer\Downloads\PleasurePartyJune17th2022version\Pleasure Party\AlwaysBeNakedPlugin\obj\Release\net40\PleasurePartyUnlimitedGold.sourcelink.json
