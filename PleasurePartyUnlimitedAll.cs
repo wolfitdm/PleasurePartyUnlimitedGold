@@ -6,7 +6,9 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.Mono;
+using Cinemachine;
 using HarmonyLib;
+using RootMotion.FinalIK;
 using SemanticVersioning;
 using System;
 using System.IO;
@@ -14,6 +16,7 @@ using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Xml.Linq;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace PleasurePartyUnlimitedAll
 {
@@ -24,6 +27,8 @@ namespace PleasurePartyUnlimitedAll
 
         private ConfigEntry<bool> configUnlimitedGold;
         private ConfigEntry<bool> configUnlimitedLevel;
+        private ConfigEntry<bool> configUnlimitedLibido;
+        private ConfigEntry<bool> configUnlimitedSkillpoints;
         public PleasurePartyUnlimitedAll()
         {
         }
@@ -84,10 +89,12 @@ namespace PleasurePartyUnlimitedAll
         private static string pluginKey = "General.Toggles";
 
         public static int moneyP2_cashVar = 900000;
-        public static int highestOverallPoints = 900000;
+        public static float highestOverallPoints = 900000;
 
         public static bool unlimitedGold = false;
         public static bool unlimitedLevel = false;
+        public static bool unlimitedLibido = false;
+        public static bool unlimitedSkillpoints = false;
 
         private void Awake()
         {
@@ -104,13 +111,27 @@ namespace PleasurePartyUnlimitedAll
                                                true,
                                                "Whether or not you want unlimited level (default true also yes, you want it, and false = no)");
 
+
+            configUnlimitedLibido = Config.Bind(pluginKey,
+                                              "UnlimitedLibido",
+                                              true,
+                                             "Whether or not you want unlimited libido (default true also yes, you want it, and false = no)");
+
+            configUnlimitedSkillpoints = Config.Bind(pluginKey,
+                                               "UnlimitedSkillpoints",
+                                               true,
+                                               "Whether or not you want unlimited skillpoints (default true also yes, you want it, and false = no)");
+
             unlimitedGold = configUnlimitedGold.Value;
             unlimitedLevel = configUnlimitedLevel.Value;
+            unlimitedLibido = configUnlimitedLibido.Value;
+            unlimitedSkillpoints = configUnlimitedSkillpoints.Value;
 
             Harmony.CreateAndPatchAll(typeof(PleasurePartyUnlimitedAll));
 
             if (!isP2)
             {
+                PatchHarmonyMethod("CharacterProperties", "Update", "CharacterProperties_Update", true, false);
                 Logger.LogInfo($"Plugin PleasurePartyUnlimitedAll for p1 is loaded!");
                 return;
             }
@@ -123,7 +144,67 @@ namespace PleasurePartyUnlimitedAll
             PatchHarmonyMethod("CharacterManager_P2", "SaveCharacterData", "_AddMoneyForP2", false, true);
             //PatchHarmonyMethod("MenuManager", "startGame", "exitGame", false, true);
             Logger.LogInfo($"Plugin PleasurePartyUnlimitedAll for p2 is loaded!");
-        }        
+        }
+
+
+        public static bool CharacterProperties_Update(object __instance)
+        {
+            if (!unlimitedLibido)
+            {
+                return true;
+            }
+
+            if (!unlimitedSkillpoints)
+            {
+                return true; 
+            }
+
+            CharacterProperties _this = (CharacterProperties)__instance;
+
+            _this.libido = 150;
+            _this.personalityType = 30;
+            _this.intelligence = 30;
+            _this.looks = 30;
+            _this.turnOn = 30;
+            _this.penisSize = 30;
+            _this.quirks = 30;
+            _this.sexWithSelf = true;
+            _this.sexWithMen = true;
+            _this.sexWithWomen = true;
+            _this.sexWithMultiple = true;
+            _this.likesBJ = true;
+            _this.likesOral = true;
+            _this.likesTop = true;
+            _this.likesBottom = true;
+            _this.likesLaying = true;
+            _this.likesSitting = true;
+            _this.likesStanding = true;
+            _this.likesBehind = true;
+            _this.likesAnal = true;
+            _this.standardSex = true;
+            _this.lesbianSex = true;
+            _this.soloSex = true;
+            _this.analSex = true;
+            _this.myPersonalityType = 30;
+            _this.myIntelligence = 30;
+            _this.myLooks = 30;
+            _this.myTurnOn = 30;
+            _this.myPenisSize = 30;
+            _this.myAge = 30;
+            _this.mySexualSkill = 100;
+            _this.mySexualExperience = 100;
+            _this.myDesireToPlease = 100;
+            _this.myStamina = 100;
+            _this.myRecoveryTime = 0;
+            _this.compatibilityScore = 100f;
+            ScenePersistent.generalOutputMultiplier = 10;
+            ScenePersistent.climaxBonusMultiplier = 10;
+            ScenePersistent.libidoFactor = 10;
+            _this.orgasmMultiplier = 10;
+            _this.climaxFactor = 10;
+
+            return true;
+        }
 
         public static void AddMoneyForP2_SP_P2_money(int money)
         {
@@ -153,6 +234,13 @@ namespace PleasurePartyUnlimitedAll
             {
                 Logger.LogInfo("field SP_P2.money for pleasure party 2 not found: return here");
                 return;
+            }
+
+            moneyP2_cashVar += money;
+
+            if (money > 90000000)
+            {
+                moneyP2_cashVar = money = 90000000;
             }
 
             try
@@ -278,6 +366,11 @@ namespace PleasurePartyUnlimitedAll
 
             money += moneyP2_cashVar;
 
+            if (money > 90000000)
+            {
+                moneyP2_cashVar = money = 90000000;
+            }
+
             try
             {
                 int oldValue = (int)moneyField.GetValue(myGameData);
@@ -400,6 +493,11 @@ namespace PleasurePartyUnlimitedAll
 
             money += moneyP2_cashVar;
 
+            if (money > 90000000)
+            {
+                moneyP2_cashVar = money = 90000000;
+            }
+
             try
             {
                 int oldValue = (int)moneyField_scenePersistent.GetValue(myGameData_scenePersistent);
@@ -417,7 +515,7 @@ namespace PleasurePartyUnlimitedAll
             }
         }
 
-        public static void AddLevel_ScenePersistent_myGameData_HighestOverallPoints(int hp)
+        public static void AddLevel_ScenePersistent_myGameData_HighestOverallPoints(float hp)
         {
             if (!unlimitedLevel)
             {
@@ -452,11 +550,18 @@ namespace PleasurePartyUnlimitedAll
                 return;
             }
 
-            // --- Modify public field "Age" ---
-            FieldInfo hpField_scenePersistent = innerType_scenePersistent.GetField("HighestOverallPoints", BindingFlags.Public | BindingFlags.Instance);
-            if (hpField_scenePersistent == null)
+            FieldInfo hpField = innerType_scenePersistent.GetField("HighestOverallPoints", BindingFlags.Public | BindingFlags.Instance);
+
+            if (hpField == null)
             {
-                Logger.LogInfo("field ScenePersistent.myGameData.HighestOverallPoints for pleasure party not found: return here");
+                Logger.LogInfo("Can not get field ScenePersistent.myGameData.HighestOverallPoints for pleasure party: try ScenePersistent.myGameData.HighestOverallPoints");
+                try
+                {
+                    ScenePersistent.myGameData.HighestOverallPoints += (float)(hp + highestOverallPoints);
+                }
+                catch (Exception ex)
+                {
+                }
                 return;
             }
 
@@ -468,7 +573,7 @@ namespace PleasurePartyUnlimitedAll
             }
             catch (Exception ex)
             {
-                Logger.LogInfo("Can not get field ScenePersistent.myGameData for pleasure party: try ScenePersistent.myGameData");
+                Logger.LogInfo("Can not get field ScenePersistent.myGameData for pleasure party 2: try ScenePersistent.myGameData");
                 Logger.LogInfo(ex.ToString());
                 myGameData_scenePersistent = null;
             }
@@ -481,7 +586,7 @@ namespace PleasurePartyUnlimitedAll
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogInfo("Can not get field ScenePersistent.myGameData for pleasure party: return here");
+                    Logger.LogInfo("Can not get field ScenePersistent.myGameData for pleasure party 2: return here");
                     Logger.LogInfo(ex.ToString());
                     return;
                 }
@@ -489,18 +594,23 @@ namespace PleasurePartyUnlimitedAll
 
             hp += highestOverallPoints;
 
+            if (hp > 90000000)
+            {
+                highestOverallPoints = hp = 90000000;
+            }
+
             try
             {
-                int oldValue = (int)hpField_scenePersistent.GetValue(myGameData_scenePersistent);
+                float oldValue = (float)hpField.GetValue(myGameData_scenePersistent);
                 Logger.LogInfo("ScenePersistent.myGameData.HighestOverallPoints: Old hp value: " + oldValue.ToString() + " $");
                 oldValue += hp;
                 highestOverallPoints = oldValue;
                 Logger.LogInfo("ScenePersistent.myGameData.HighestOverallPoints: New hp value: " + oldValue.ToString() + " $");
-                hpField_scenePersistent.SetValue(myGameData_scenePersistent, oldValue);
+                hpField.SetValue(myGameData_scenePersistent, oldValue);
             }
             catch (Exception ex)
             {
-                Logger.LogInfo("Can not set field ScenePersistent.myGameData.HighestOverallPoints for pleasure party: return here");
+                Logger.LogInfo("Can not set field Classes_P2.gameData2.Money for pleasure party 2: return here");
                 Logger.LogInfo(ex.ToString());
                 return;
             }
@@ -603,15 +713,28 @@ namespace PleasurePartyUnlimitedAll
             AddMoneyForP2_ScenePersistent_myGameData_Money(value);
         }
 
-        static void _AddMoneyForP2()
+        static void _AddMoneyForP2(object __instance)
         {
-            if (!unlimitedGold && !unlimitedLevel)
+            if (!unlimitedGold && !unlimitedLevel && !unlimitedLibido && !unlimitedSkillpoints)
             {
                 return;
             }
 
             AddMoneyShitForP2_All(5000);
             AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
+
+            CharacterManager_P2 _this = (CharacterManager_P2)__instance;    
+            if (unlimitedLibido)
+            {
+                if (_this.libido < 100)
+                    _this.libido = 100;
+            }
+
+            if (unlimitedSkillpoints)
+            {
+                if (_this.skillPoints < 1000)
+                    _this.skillPoints = 1000;
+            }
         }
 
         public static void AddMoneyShitForP2(Assets.FantasyInventory.Scripts.Interface.Shop obj, int value, ItemId currencyId)
@@ -664,6 +787,18 @@ namespace PleasurePartyUnlimitedAll
             //Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             //_this.inventory.Add(new Assets.FantasyInventory.Scripts.Data.Item(Assets.FantasyInventory.Scripts.Enums.ItemId.FruityDrink, 100));
             return true;
+        }
+
+
+        [HarmonyPatch(typeof(LevelManager), "calculateLevel")] // Specify target method with HarmonyPatch attribute
+        [HarmonyPostfix]                              // There are different patch types. Prefix code runs before original code
+        static void _calculateLevel(object __instance)
+        {
+            if (!unlimitedLevel)
+            {
+                return;
+            }
+            AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
         }
 
         [HarmonyPatch(typeof(Assets.FantasyInventory.Scripts.Interface.Shop), "Buy")] // Specify target method with HarmonyPatch attribute
