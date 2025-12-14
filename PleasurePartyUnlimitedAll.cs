@@ -3,6 +3,7 @@ using Assets.FantasyInventory.Scripts.Enums;
 using Assets.FantasyInventory.Scripts.Interface;
 using Assets.FantasyInventory.Scripts.Interface.Elements;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.Mono;
 using HarmonyLib;
@@ -14,13 +15,16 @@ using System.Runtime.Remoting.Messaging;
 using System.Xml.Linq;
 using UnityEngine;
 
-namespace PleasurePartyUnlimitedGold
+namespace PleasurePartyUnlimitedAll
 {
-    [BepInPlugin("com.wolfitdm.PleasurePartyUnlimitedGold", "PleasurePartyUnlimitedGold Plugin", "1.0.0.0")]
-    public class PleasurePartyUnlimitedGold : BaseUnityPlugin
+    [BepInPlugin("com.wolfitdm.PleasurePartyUnlimitedAll", "PleasurePartyUnlimitedAll Plugin", "1.0.0.0")]
+    public class PleasurePartyUnlimitedAll : BaseUnityPlugin
     {
         internal static new ManualLogSource Logger;
-        public PleasurePartyUnlimitedGold()
+
+        private ConfigEntry<bool> configUnlimitedGold;
+        private ConfigEntry<bool> configUnlimitedLevel;
+        public PleasurePartyUnlimitedAll()
         {
         }
 
@@ -32,7 +36,7 @@ namespace PleasurePartyUnlimitedGold
         public static void PatchHarmonyMethod(string originalClassName, string originalMethodName, string patchedMethodName, bool usePrefix, bool usePostfix)
         {
             // Create a new Harmony instance with a unique ID
-            var harmony = new Harmony("com.wolfitdm.PleasurePartyUnlimitedGold");
+            var harmony = new Harmony("com.wolfitdm.PleasurePartyUnlimitedAll");
 
             Type originalClass = null;
 
@@ -53,7 +57,7 @@ namespace PleasurePartyUnlimitedGold
                 return;
             }
 
-            MethodInfo patched = AccessTools.Method(typeof(PleasurePartyUnlimitedGold), patchedMethodName);
+            MethodInfo patched = AccessTools.Method(typeof(PleasurePartyUnlimitedAll), patchedMethodName);
 
             if (patched == null)
             {
@@ -77,16 +81,37 @@ namespace PleasurePartyUnlimitedGold
         }
 
         private static bool isP2 = testIsP2();
+        private static string pluginKey = "General.Toggles";
+
+        public static int moneyP2_cashVar = 900000;
+        public static int highestOverallPoints = 900000;
+
+        public static bool unlimitedGold = false;
+        public static bool unlimitedLevel = false;
 
         private void Awake()
         {
             // Plugin startup logic
             Logger = base.Logger;
-            Harmony.CreateAndPatchAll(typeof(PleasurePartyUnlimitedGold));
+
+            configUnlimitedGold = Config.Bind(pluginKey,
+                                              "UnlimitedMoney",
+                                              true,
+                                             "Whether or not you want unlimited money (default true also yes, you want it, and false = no)");
+            
+            configUnlimitedLevel = Config.Bind(pluginKey,
+                                               "UnlimitedLevel",
+                                               true,
+                                               "Whether or not you want unlimited level (default true also yes, you want it, and false = no)");
+
+            unlimitedGold = configUnlimitedGold.Value;
+            unlimitedLevel = configUnlimitedLevel.Value;
+
+            Harmony.CreateAndPatchAll(typeof(PleasurePartyUnlimitedAll));
 
             if (!isP2)
             {
-                Logger.LogInfo($"Plugin PleasurePartyUnlimitedGold for p1 is loaded!");
+                Logger.LogInfo($"Plugin PleasurePartyUnlimitedAll for p1 is loaded!");
                 return;
             }
 
@@ -97,13 +122,16 @@ namespace PleasurePartyUnlimitedGold
             //PatchHarmonyMethod("Assets.FantasyInventory.Scripts.Interface.Shop", "loadInventory", "loadInventory", true, false);
             PatchHarmonyMethod("CharacterManager_P2", "SaveCharacterData", "_AddMoneyForP2", false, true);
             //PatchHarmonyMethod("MenuManager", "startGame", "exitGame", false, true);
-            Logger.LogInfo($"Plugin PleasurePartyUnlimitedGold for p2 is loaded!");
-        }
-
-        public static int moneyP2_cashVar = 900000;
+            Logger.LogInfo($"Plugin PleasurePartyUnlimitedAll for p2 is loaded!");
+        }        
 
         public static void AddMoneyForP2_SP_P2_money(int money)
         {
+            if (!unlimitedGold)
+            {
+                return;
+            }
+
             Type pleasureParty2 = MyGetType("Classes_P2");
 
             if (pleasureParty2 == null)
@@ -146,6 +174,11 @@ namespace PleasurePartyUnlimitedGold
 
         public static void AddMoneyForP2_SP_P2_myGameData_Money(int money)
         {
+            if (!unlimitedGold)
+            {
+                return;
+            }
+
             Type pleasureParty2 = MyGetType("Classes_P2");
 
             if (pleasureParty2 == null)
@@ -263,6 +296,11 @@ namespace PleasurePartyUnlimitedGold
 
         public static void AddMoneyForP2_ScenePersistent_myGameData_Money(int money)
         {
+            if (!unlimitedGold)
+            {
+                return;
+            }
+
             Type pleasureParty2 = MyGetType("Classes_P2");
 
             if (pleasureParty2 == null)
@@ -379,38 +417,132 @@ namespace PleasurePartyUnlimitedGold
             }
         }
 
-       /* public static void exitGame(object __instance)
+        public static void AddLevel_ScenePersistent_myGameData_HighestOverallPoints(int hp)
         {
-            MenuManager _this = (MenuManager)__instance;
-            Type type = typeof(MenuManager);
-            FieldInfo fieldInfo = type.GetField("gameDataFile");
-            string gameDataFile = (string)fieldInfo.GetValue(_this);
-            Logger.LogInfo(gameDataFile);
-            ScenePersistent.stopSaving = true;
-            if (!Directory.Exists(Application.dataPath + "/HFTData"))
+            if (!unlimitedLevel)
             {
-                Debug.Log((object)"nor found data path, creating");
-                Directory.CreateDirectory(Application.dataPath + "/HFTData");
+                return;
             }
-            
-            Bayat.SaveSystem.SaveSystemAPI.SaveAsync(gameDataFile, (object)new ScenePersistent.gameData()
+
+            Type pleasureParty2_ScenePersistent = MyGetType("ScenePersistent");
+
+            if (pleasureParty2_ScenePersistent == null)
             {
-                Money = 100000,
-                Level = 1,
-                HighestOverallPoints = 0.0f,
-                ManViewCamNotices = 0,
-                FreeCamNotices = 0,
-                SteamOn = false,
-                arenasOwned = new bool[12],
-                peopleOwned = new bool[30],
-                lastPlayedDateTime = "",
-                completedTutorial = false,
-                completedConclusion = false
-            });
-        }*/
+                Logger.LogInfo("class ScenePersistent for pleasure party not found: return here");
+                return;
+            }
+
+            FieldInfo pleasureParty2_ScenePersistent_myGameData = pleasureParty2_ScenePersistent.GetField("myGameData", BindingFlags.Public | BindingFlags.Static);
+            if (pleasureParty2_ScenePersistent_myGameData == null)
+            {
+                Logger.LogInfo("field ScenePersistent.myGameData for pleasure party not found: return here");
+                return;
+            }
+
+            Type innerType_scenePersistent = null;
+
+            if (innerType_scenePersistent == null)
+            {
+                innerType_scenePersistent = pleasureParty2_ScenePersistent_myGameData.FieldType;
+            }
+
+            if (innerType_scenePersistent == null)
+            {
+                Logger.LogInfo("class ScenePersistent.myGameData for pleasure party not found: return here");
+                return;
+            }
+
+            // --- Modify public field "Age" ---
+            FieldInfo hpField_scenePersistent = innerType_scenePersistent.GetField("HighestOverallPoints", BindingFlags.Public | BindingFlags.Instance);
+            if (hpField_scenePersistent == null)
+            {
+                Logger.LogInfo("field ScenePersistent.myGameData.HighestOverallPoints for pleasure party not found: return here");
+                return;
+            }
+
+            object myGameData_scenePersistent = null;
+
+            try
+            {
+                myGameData_scenePersistent = pleasureParty2_ScenePersistent_myGameData.GetValue(null);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogInfo("Can not get field ScenePersistent.myGameData for pleasure party: try ScenePersistent.myGameData");
+                Logger.LogInfo(ex.ToString());
+                myGameData_scenePersistent = null;
+            }
+
+            if (myGameData_scenePersistent == null)
+            {
+                try
+                {
+                    myGameData_scenePersistent = ScenePersistent.myGameData;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogInfo("Can not get field ScenePersistent.myGameData for pleasure party: return here");
+                    Logger.LogInfo(ex.ToString());
+                    return;
+                }
+            }
+
+            hp += highestOverallPoints;
+
+            try
+            {
+                int oldValue = (int)hpField_scenePersistent.GetValue(myGameData_scenePersistent);
+                Logger.LogInfo("ScenePersistent.myGameData.HighestOverallPoints: Old hp value: " + oldValue.ToString() + " $");
+                oldValue += hp;
+                highestOverallPoints = oldValue;
+                Logger.LogInfo("ScenePersistent.myGameData.HighestOverallPoints: New hp value: " + oldValue.ToString() + " $");
+                hpField_scenePersistent.SetValue(myGameData_scenePersistent, oldValue);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogInfo("Can not set field ScenePersistent.myGameData.HighestOverallPoints for pleasure party: return here");
+                Logger.LogInfo(ex.ToString());
+                return;
+            }
+        }
+
+        /* public static void exitGame(object __instance)
+         {
+             MenuManager _this = (MenuManager)__instance;
+             Type type = typeof(MenuManager);
+             FieldInfo fieldInfo = type.GetField("gameDataFile");
+             string gameDataFile = (string)fieldInfo.GetValue(_this);
+             Logger.LogInfo(gameDataFile);
+             ScenePersistent.stopSaving = true;
+             if (!Directory.Exists(Application.dataPath + "/HFTData"))
+             {
+                 Debug.Log((object)"nor found data path, creating");
+                 Directory.CreateDirectory(Application.dataPath + "/HFTData");
+             }
+
+             Bayat.SaveSystem.SaveSystemAPI.SaveAsync(gameDataFile, (object)new ScenePersistent.gameData()
+             {
+                 Money = 100000,
+                 Level = 1,
+                 HighestOverallPoints = 0.0f,
+                 ManViewCamNotices = 0,
+                 FreeCamNotices = 0,
+                 SteamOn = false,
+                 arenasOwned = new bool[12],
+                 peopleOwned = new bool[30],
+                 lastPlayedDateTime = "",
+                 completedTutorial = false,
+                 completedConclusion = false
+             });
+         }*/
 
         public static void AddMoney(Assets.FantasyInventory.Scripts.Interface.Shop obj, ItemContainer inventory, int value, ItemId currencyId)
         {
+            if (!unlimitedGold)
+            {
+                return; 
+            }
+
             // Retrieve the private method info
             MethodInfo methodInfo = typeof(Assets.FantasyInventory.Scripts.Interface.Shop).GetMethod(
                 "AddMoney",
@@ -461,6 +593,11 @@ namespace PleasurePartyUnlimitedGold
 
         static void AddMoneyShitForP2_All(int value)
         {
+            if (!unlimitedGold)
+            {
+                return;
+            }
+
             AddMoneyForP2_SP_P2_money(value);
             AddMoneyForP2_SP_P2_myGameData_Money(value);
             AddMoneyForP2_ScenePersistent_myGameData_Money(value);
@@ -468,11 +605,22 @@ namespace PleasurePartyUnlimitedGold
 
         static void _AddMoneyForP2()
         {
+            if (!unlimitedGold && !unlimitedLevel)
+            {
+                return;
+            }
+
             AddMoneyShitForP2_All(5000);
+            AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
         }
 
         public static void AddMoneyShitForP2(Assets.FantasyInventory.Scripts.Interface.Shop obj, int value, ItemId currencyId)
         {
+            if (!unlimitedGold)
+            {
+                return;
+            }
+
             // P1 so cool
 
             Logger.LogInfo("Add Money to character: " + value.ToString() + " $");
@@ -505,6 +653,11 @@ namespace PleasurePartyUnlimitedGold
         }
         static bool AddMoneyForP2 (object __instance)
         {
+            if (!unlimitedGold)
+            {
+                return true;
+            }
+
             Logger.LogInfo("Add money for p2 is called");
             Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             AddMoneyShitForP2(_this, 5000, ItemId.Gold);
@@ -517,8 +670,14 @@ namespace PleasurePartyUnlimitedGold
         [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
         static bool Buy(object __instance)
         {
+            if (!unlimitedGold && !unlimitedLevel)
+            {
+                return true;
+            }
+
             Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             AddMoneyShitForP2(_this, 5000, ItemId.Gold);
+            AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
             //Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             //_this.inventory.Add(new Assets.FantasyInventory.Scripts.Data.Item(Assets.FantasyInventory.Scripts.Enums.ItemId.FruityDrink, 100));
             return true;
@@ -528,8 +687,14 @@ namespace PleasurePartyUnlimitedGold
         [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
         static bool Sell(object __instance)
         {
+            if (!unlimitedGold && !unlimitedLevel)
+            {
+                return true;
+            }
+
             Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             AddMoneyShitForP2(_this, 5000, ItemId.Gold);
+            AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
             //Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             //_this.inventory.Add(new Assets.FantasyInventory.Scripts.Data.Item(Assets.FantasyInventory.Scripts.Enums.ItemId.FruityDrink, 100));
             return true;

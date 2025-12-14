@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+02167136144fd2c95d3b8dcc90decfc5ba09f66e")]
-[assembly: System.Reflection.AssemblyProductAttribute("You have unlimited gold!")]
+[assembly: System.Reflection.AssemblyProductAttribute("You have unlimited all!")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PleasurePartyUnlimitedAll")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 

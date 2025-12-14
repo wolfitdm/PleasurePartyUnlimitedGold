@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DJQ/XILj2Nk=",
+  "dgSpecHash": "Y7ZhoRq5Mv8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\CdemyTeilnehmer\\Downloads\\Pleasure_Party_2\\Pleasure Party 2\\PleasurePartyUnlimitedGold\\PleasurePartyUnlimitedGold.csproj",
+  "projectFilePath": "C:\\Users\\CdemyTeilnehmer\\Downloads\\Pleasure_Party_2\\Pleasure Party 2\\PleasurePartyUnlimitedGold\\PleasurePartyUnlimitedAll.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\CdemyTeilnehmer\\.nuget\\packages\\bepinex.analyzers\\1.0.8\\bepinex.analyzers.1.0.8.nupkg.sha512",
     "C:\\Users\\CdemyTeilnehmer\\.nuget\\packages\\bepinex.core\\6.0.0-be.752\\bepinex.core.6.0.0-be.752.nupkg.sha512",

@@ -770,9 +770,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\CdemyTeilnehmer\\Downloads\\Pleasure_Party_2\\Pleasure Party 2\\PleasurePartyUnlimitedGold\\PleasurePartyUnlimitedGold.csproj",
-      "projectName": "PleasurePartyUnlimitedGold",
-      "projectPath": "C:\\Users\\CdemyTeilnehmer\\Downloads\\Pleasure_Party_2\\Pleasure Party 2\\PleasurePartyUnlimitedGold\\PleasurePartyUnlimitedGold.csproj",
+      "projectUniqueName": "C:\\Users\\CdemyTeilnehmer\\Downloads\\Pleasure_Party_2\\Pleasure Party 2\\PleasurePartyUnlimitedGold\\PleasurePartyUnlimitedAll.csproj",
+      "projectName": "PleasurePartyUnlimitedAll",
+      "projectPath": "C:\\Users\\CdemyTeilnehmer\\Downloads\\Pleasure_Party_2\\Pleasure Party 2\\PleasurePartyUnlimitedGold\\PleasurePartyUnlimitedAll.csproj",
       "packagesPath": "C:\\Users\\CdemyTeilnehmer\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\CdemyTeilnehmer\\Downloads\\Pleasure_Party_2\\Pleasure Party 2\\PleasurePartyUnlimitedGold\\obj\\",
       "projectStyle": "PackageReference",
