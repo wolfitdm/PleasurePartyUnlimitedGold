@@ -30,6 +30,12 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\PleasureParty2_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Bayat.Core.Runtime">
+      <HintPath>..\PleasureParty2_Data\Managed\Bayat.Core.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Bayat.SaveSystem.Runtime">
+      <HintPath>..\PleasureParty2_Data\Managed\Bayat.SaveSystem.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="SpeechBlend">
       <HintPath>..\PleasureParty2_Data\Managed\SpeechBlend.dll</HintPath>
     </Reference>
