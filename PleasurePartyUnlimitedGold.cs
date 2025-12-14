@@ -71,15 +71,20 @@ namespace PleasurePartyUnlimitedGold
                 postfix: postfixMethod);
         }
 
+        public static bool testIsP2()
+        {
+            return MyGetType("CharacterManager_P2") != null;
+        }
+
+        private static bool isP2 = testIsP2();
+
         private void Awake()
         {
             // Plugin startup logic
             Logger = base.Logger;
             Harmony.CreateAndPatchAll(typeof(PleasurePartyUnlimitedGold));
 
-            Type pleasureParty2 = MyGetType("Classes_P2");
-
-            if (pleasureParty2 == null)
+            if (!isP2)
             {
                 Logger.LogInfo($"Plugin PleasurePartyUnlimitedGold for p1 is loaded!");
                 return;
@@ -481,6 +486,12 @@ namespace PleasurePartyUnlimitedGold
             Type pleasureParty2 = MyGetType("Classes_P2");
 
             Logger.LogInfo("Test support for pleasure party 2");
+
+            if (!isP2)
+            {
+                Logger.LogInfo("Really no support found for pleasure party 2");
+                return;
+            }
 
             if (pleasureParty2 == null)
             {
