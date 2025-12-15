@@ -1,23 +1,13 @@
-﻿using Assets.FantasyInventory.Scripts.Data;
-using Assets.FantasyInventory.Scripts.Enums;
-using Assets.FantasyInventory.Scripts.Interface;
+﻿using Assets.FantasyInventory.Scripts.Enums;
 using Assets.FantasyInventory.Scripts.Interface.Elements;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.Mono;
-using Cinemachine;
 using HarmonyLib;
-using RootMotion.FinalIK;
-using SemanticVersioning;
 using System;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Xml.Linq;
 using UnityEngine;
-using UnityEngine.Audio;
 
 namespace PleasurePartyUnlimitedAll
 {
@@ -30,6 +20,7 @@ namespace PleasurePartyUnlimitedAll
         private ConfigEntry<bool> configUnlimitedLevel;
         private ConfigEntry<bool> configUnlimitedLibido;
         private ConfigEntry<bool> configUnlimitedSkillpoints;
+        private ConfigEntry<bool> configUnlimitedPeoples;
         public PleasurePartyUnlimitedAll()
         {
         }
@@ -96,6 +87,7 @@ namespace PleasurePartyUnlimitedAll
         public static bool unlimitedLevel = false;
         public static bool unlimitedLibido = false;
         public static bool unlimitedSkillpoints = false;
+        public static bool unlimitedPeoples = false;
 
         private void Awake()
         {
@@ -123,10 +115,16 @@ namespace PleasurePartyUnlimitedAll
                                                true,
                                                "Whether or not you want unlimited skillpoints (default true also yes, you want it, and false = no)");
 
+            configUnlimitedPeoples = Config.Bind(pluginKey,
+                                   "UnlimitedPeoples",
+                                   true,
+                                   "Whether or not you want unlimited peoples (default true also yes, you want it, and false = no)");
+
             unlimitedGold = configUnlimitedGold.Value;
             unlimitedLevel = configUnlimitedLevel.Value;
             unlimitedLibido = configUnlimitedLibido.Value;
             unlimitedSkillpoints = configUnlimitedSkillpoints.Value;
+            unlimitedPeoples = configUnlimitedPeoples.Value;
 
             Harmony.CreateAndPatchAll(typeof(PleasurePartyUnlimitedAll));
 
@@ -797,27 +795,106 @@ namespace PleasurePartyUnlimitedAll
         static bool Update(object __instance)
         {
             LevelManager _this = (LevelManager)__instance;
+            bool increaseIndex = false;
             
-            if (_this.levelRequirements.Length > 10000)
+            if (_this.levelRequirements.Length <= 30)
+            {
+                increaseIndex = true;
+            } else
             {
                 return true;
             }
 
-            int[] newLevelRequirements = new int[_this.levelRequirements.Length+10000];
-            for(int i = 0; i < _this.levelRequirements.Length; i++)
+            /*
+             * 
+            Type thisType = _this.GetType();
+            FieldInfo oldLevelField = thisType.GetField("oldLevel", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo myLevelField = thisType.GetField("myLevel", BindingFlags.NonPublic | BindingFlags.Instance);
+            int oldLevel = 0;
+            int myLevel = 0;
+
+            if (oldLevelField == null)
             {
-                newLevelRequirements[i] = _this.levelRequirements[i];
+                oldLevel = 29;
             }
-            for(int i = _this.levelRequirements.Length; i < newLevelRequirements.Length; i++)
+            else
             {
-                newLevelRequirements[i] = 0;
+                try
+                {
+                    oldLevel = (int)oldLevelField.GetValue(thisType);
+                }
+                catch (Exception e)
+                {
+                    oldLevel = 29;
+                }
             }
-            _this.levelRequirements = newLevelRequirements;
+
+            if (myLevelField == null)
+            {
+                myLevel = 29;
+            }
+            else
+            {
+                try
+                {
+                    myLevel = (int)myLevelField.GetValue(thisType);
+                }
+                catch (Exception e)
+                {
+                    myLevel = 29;
+                }
+            }
+
+            if (_this.levelRequirements.Length <= myLevel)
+            {
+                increaseIndex = true;
+            }
+
+            if (_this.levelRequirements.Length <= oldLevel)
+            {
+                increaseIndex = true;
+            }*/
+
+            if (increaseIndex)
+            {
+                int[] newLevelRequirements = new int[_this.levelRequirements.Length + 30];
+                for (int i = 0; i < _this.levelRequirements.Length; i++)
+                {
+                    newLevelRequirements[i] = _this.levelRequirements[i];
+                }
+                for (int i = _this.levelRequirements.Length; i < newLevelRequirements.Length; i++)
+                {
+                    newLevelRequirements[i] = 0;
+                }
+                _this.levelRequirements = newLevelRequirements;
+            }
             return true;
         }
 
+        [HarmonyPatch(typeof(SelectionProcess), "selectArena")]
+        [HarmonyPrefix]
+        static bool selectArena(GameObject whichArea, object __instance)
+        {
+            if (!unlimitedPeoples)
+            {
+                return true;
+            }
 
-            [HarmonyPatch(typeof(LevelManager), "calculateLevel")] // Specify target method with HarmonyPatch attribute
+            SelectionProcess _this = (SelectionProcess)__instance;
+            arenaProperties myProps = whichArea.GetComponent<arenaProperties>();
+            myProps.numberOfPeople += 14;
+            myProps.specialGirlsOnly = false;
+            Type _thisType = (Type)_this.GetType();
+            FieldInfo myPropsField = _thisType.GetField("myProps", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (myPropsField != null)
+            {
+                Logger.LogInfo("set arena myprops value");
+                myPropsField.SetValue(__instance, myProps);
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(LevelManager), "calculateLevel")] // Specify target method with HarmonyPatch attribute
         [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
         static bool _calculateLevel(object __instance)
         {
@@ -825,7 +902,20 @@ namespace PleasurePartyUnlimitedAll
             {
                 return true;
             }
+            
             try
+            {
+                if (ScenePersistent.myGameData.Level >= 29)
+                {
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+            }
+
+            AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
+            /*try
             {
                 try
                 {
@@ -848,50 +938,50 @@ namespace PleasurePartyUnlimitedAll
                 }
                 catch (Exception ex)
                 {
-                }
+                }*/
 
-                /*Logger.LogInfo("my level is now: 30");
-                LevelManager _this = (LevelManager)__instance;
-                Type _thisType = _this.GetType();
-                FieldInfo oldLevelField = _thisType.GetField("oldLevel");
-                FieldInfo myLevelField = _thisType.GetField("myLevel");
-                int oldLevel = (int)oldLevelField.GetValue(_this);
-                int myLevel = (int)myLevelField.GetValue(_this);
-                
-                oldLevel = myLevel;
-                
-                int levelRequirementsLength = _this.levelRequirements == null ? 0 : _this.levelRequirements.Length;
-                
-                oldLevel = myLevel = levelRequirementsLength - 1;
-                
-                if (oldLevel < 0)
-                {
-                    oldLevel = myLevel = 0;
-                }
-                ScenePersistent.myGameData.HighestOverallPoints = -1;
-                for (int index = 0; index < levelRequirementsLength; ++index)
-                {
-                    if (_this.levelRequirements[index] > 0 && _this.levelRequirements[index] > ScenePersistent.myGameData.HighestOverallPoints)
-                    {
-                        ScenePersistent.myGameData.HighestOverallPoints = _this.levelRequirements[index] + 1;
-                    }
-                    _this.levelRequirements[index] = 0;
-                    ScenePersistent.nextLevelRequirement = 0;
-                }
-                oldLevel = myLevel;
-                oldLevelField.SetValue(_this, oldLevel);
-                myLevelField.SetValue(_this, myLevel);
-                Logger.LogInfo("my level is now: " + myLevel.ToString());
-                if (myLevel > 17 && !ScenePersistent.myGameData.completedConclusion && !ScenePersistent.inConclusion)
-                    ScenePersistent.inConclusion = true;
-                ScenePersistent.myGameData.Level = myLevel;
-                ScenePersistent.nextLevelRequirement = 0;*/
-            }
-            catch (Exception e)
+            /*Logger.LogInfo("my level is now: 30");
+            LevelManager _this = (LevelManager)__instance;
+            Type _thisType = _this.GetType();
+            FieldInfo oldLevelField = _thisType.GetField("oldLevel");
+            FieldInfo myLevelField = _thisType.GetField("myLevel");
+            int oldLevel = (int)oldLevelField.GetValue(_this);
+            int myLevel = (int)myLevelField.GetValue(_this);
+
+            oldLevel = myLevel;
+
+            int levelRequirementsLength = _this.levelRequirements == null ? 0 : _this.levelRequirements.Length;
+
+            oldLevel = myLevel = levelRequirementsLength - 1;
+
+            if (oldLevel < 0)
             {
-                Logger.LogInfo("Errror error in calculateLevel");
-                Logger.LogInfo(e.ToString());
+                oldLevel = myLevel = 0;
             }
+            ScenePersistent.myGameData.HighestOverallPoints = -1;
+            for (int index = 0; index < levelRequirementsLength; ++index)
+            {
+                if (_this.levelRequirements[index] > 0 && _this.levelRequirements[index] > ScenePersistent.myGameData.HighestOverallPoints)
+                {
+                    ScenePersistent.myGameData.HighestOverallPoints = _this.levelRequirements[index] + 1;
+                }
+                _this.levelRequirements[index] = 0;
+                ScenePersistent.nextLevelRequirement = 0;
+            }
+            oldLevel = myLevel;
+            oldLevelField.SetValue(_this, oldLevel);
+            myLevelField.SetValue(_this, myLevel);
+            Logger.LogInfo("my level is now: " + myLevel.ToString());
+            if (myLevel > 17 && !ScenePersistent.myGameData.completedConclusion && !ScenePersistent.inConclusion)
+                ScenePersistent.inConclusion = true;
+            ScenePersistent.myGameData.Level = myLevel;
+            ScenePersistent.nextLevelRequirement = 0;*/
+            /*}
+                catch (Exception e)
+                {
+                    Logger.LogInfo("Errror error in calculateLevel");
+                    Logger.LogInfo(e.ToString());
+                }*/
             return true;
         }
 

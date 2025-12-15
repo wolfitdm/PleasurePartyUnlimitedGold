@@ -27,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Accessibility">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Accessibility.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\PleasureParty2_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -51,8 +54,47 @@
     <Reference Include="DDebug">
       <HintPath>lib\DDebug.dll</HintPath>
     </Reference>
+    <Reference Include="DE_Environment.Tools">
+      <HintPath>lib\DE_Environment.Tools.dll</HintPath>
+    </Reference>
+    <Reference Include="DE_Environment.Tools.Editor">
+      <HintPath>lib\DE_Environment.Tools.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="DE_Environment.Utils">
+      <HintPath>lib\DE_Environment.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="DE_Environment.Utils.Editor">
+      <HintPath>lib\DE_Environment.Utils.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="DOTween">
       <HintPath>lib\DOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="HDRPSamples">
+      <HintPath>lib\HDRPSamples.dll</HintPath>
+    </Reference>
+    <Reference Include="KWS">
+      <HintPath>lib\KWS.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Data.Sqlite">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Mono.Data.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Posix">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Mono.Posix.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.WebBrowser">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Mono.WebBrowser.dll</HintPath>
+    </Reference>
+    <Reference Include="netstandard">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\netstandard.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Novell.Directory.Ldap">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Novell.Directory.Ldap.dll</HintPath>
     </Reference>
     <Reference Include="Pathfinding.ClipperLib">
       <HintPath>lib\Pathfinding.ClipperLib.dll</HintPath>
@@ -63,8 +105,72 @@
     <Reference Include="Pathfinding.Poly2Tri">
       <HintPath>lib\Pathfinding.Poly2Tri.dll</HintPath>
     </Reference>
+    <Reference Include="PWCommon5DLL">
+      <HintPath>lib\PWCommon5DLL.dll</HintPath>
+    </Reference>
+    <Reference Include="SALSA">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\SALSA.dll</HintPath>
+    </Reference>
     <Reference Include="SpeechBlend">
       <HintPath>..\PleasureParty2_Data\Managed\SpeechBlend.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.ComponentModel.Composition.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.ComponentModel.DataAnnotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Design">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.StackTrace">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Diagnostics.StackTrace.dll</HintPath>
+    </Reference>
+    <Reference Include="System.DirectoryServices">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.DirectoryServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Design">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Drawing.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="System.EnterpriseServices">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.EnterpriseServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Globalization.Extensions">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Globalization.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Runtime.Serialization.Formatters.Soap.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Xml" />
+    <Reference Include="System.Security">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel.Internals">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.ServiceModel.Internals.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Transactions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.ApplicationServices">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Web.ApplicationServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Services">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Web.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XPath.XDocument">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\System.Xml.XPath.XDocument.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst">
       <HintPath>lib\Unity.Burst.dll</HintPath>
@@ -75,14 +181,44 @@
     <Reference Include="Unity.Mathematics">
       <HintPath>lib\Unity.Mathematics.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.MemoryProfiler">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Unity.MemoryProfiler.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Unity.ProBuilder.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.Csg">
+      <HintPath>lib\Unity.ProBuilder.Csg.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.KdTree">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Unity.ProBuilder.KdTree.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.Poly2Tri">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Unity.ProBuilder.Poly2Tri.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.Stl">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Unity.ProBuilder.Stl.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProGrids">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Unity.ProGrids.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
       <HintPath>lib\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime">
       <HintPath>lib\Unity.RenderPipelines.HighDefinition.Config.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.HighDefinition.Runtime">
       <HintPath>lib\Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TerrainTools">
+      <HintPath>lib\Unity.TerrainTools.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>lib\Unity.TextMeshPro.dll</HintPath>
@@ -93,11 +229,23 @@
     <Reference Include="Unity.VisualEffectGraph.Runtime">
       <HintPath>lib\Unity.VisualEffectGraph.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AccessibilityModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>lib\UnityEngine.AIModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AndroidJNIModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.AndroidJNIModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>lib\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ARModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.ARModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
       <HintPath>lib\UnityEngine.AssetBundleModule.dll</HintPath>
@@ -105,14 +253,38 @@
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>lib\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ClothModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterInputModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterRendererModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>lib\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CrashReportingModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.DirectorModule">
       <HintPath>lib\UnityEngine.DirectorModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.DSPGraphModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.DSPGraphModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GameCenterModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GIModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.GIModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.GridModule">
       <HintPath>lib\UnityEngine.GridModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.HotReloadModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
       <HintPath>lib\UnityEngine.ImageConversionModule.dll</HintPath>
@@ -123,11 +295,23 @@
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath>lib\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
       <HintPath>lib\UnityEngine.JSONSerializeModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.LocalizationModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.NVIDIAModule">
+      <HintPath>lib\UnityEngine.NVIDIAModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
       <HintPath>lib\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PerformanceReportingModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
       <HintPath>lib\UnityEngine.Physics2DModule.dll</HintPath>
@@ -135,14 +319,29 @@
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>lib\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ProfilerModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.ProfilerModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.ScreenCaptureModule">
       <HintPath>lib\UnityEngine.ScreenCaptureModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SharedInternalsModule">
       <HintPath>lib\UnityEngine.SharedInternalsModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.SpriteMaskModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.SpriteShapeModule">
       <HintPath>lib\UnityEngine.SpriteShapeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.StreamingModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubstanceModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SubsystemsModule">
       <HintPath>lib\UnityEngine.SubsystemsModule.dll</HintPath>
@@ -168,6 +367,9 @@
     <Reference Include="UnityEngine.TilemapModule">
       <HintPath>lib\UnityEngine.TilemapModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.TLSModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>lib\UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -180,14 +382,53 @@
     <Reference Include="UnityEngine.UIModule">
       <HintPath>lib\UnityEngine.UIModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UmbraModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UNETModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsCommonModule">
+      <HintPath>lib\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityConnectModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityCurlModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UnityCurlModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityTestProtocolModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UnityWebRequestModule">
       <HintPath>lib\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VehiclesModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.VFXModule">
       <HintPath>lib\UnityEngine.VFXModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.VideoModule">
       <HintPath>lib\UnityEngine.VideoModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VirtualTexturingModule">
+      <HintPath>..\..\..\PleasurePartyJune17th2022version\Pleasure Party\PleasureParty_Data\Managed\UnityEngine.VirtualTexturingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.VRModule">
       <HintPath>lib\UnityEngine.VRModule.dll</HintPath>
