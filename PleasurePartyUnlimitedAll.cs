@@ -792,8 +792,32 @@ namespace PleasurePartyUnlimitedAll
             return true;
         }
 
+        [HarmonyPatch(typeof(LevelManager), "Update")] // Specify target method with HarmonyPatch attribute
+        [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
+        static bool Update(object __instance)
+        {
+            LevelManager _this = (LevelManager)__instance;
+            
+            if (_this.levelRequirements.Length > 10000)
+            {
+                return true;
+            }
 
-        [HarmonyPatch(typeof(LevelManager), "calculateLevel")] // Specify target method with HarmonyPatch attribute
+            int[] newLevelRequirements = new int[_this.levelRequirements.Length+10000];
+            for(int i = 0; i < _this.levelRequirements.Length; i++)
+            {
+                newLevelRequirements[i] = _this.levelRequirements[i];
+            }
+            for(int i = _this.levelRequirements.Length; i < newLevelRequirements.Length; i++)
+            {
+                newLevelRequirements[i] = 0;
+            }
+            _this.levelRequirements = newLevelRequirements;
+            return true;
+        }
+
+
+            [HarmonyPatch(typeof(LevelManager), "calculateLevel")] // Specify target method with HarmonyPatch attribute
         [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
         static bool _calculateLevel(object __instance)
         {
