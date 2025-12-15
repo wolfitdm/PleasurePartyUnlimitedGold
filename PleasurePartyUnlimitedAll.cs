@@ -11,6 +11,7 @@ using HarmonyLib;
 using RootMotion.FinalIK;
 using SemanticVersioning;
 using System;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
@@ -149,60 +150,62 @@ namespace PleasurePartyUnlimitedAll
 
         public static bool CharacterProperties_Update(object __instance)
         {
-            if (!unlimitedLibido)
+            if (!unlimitedLibido && !unlimitedSkillpoints && !unlimitedLevel)
             {
                 return true;
             }
 
-            if (!unlimitedSkillpoints)
-            {
-                return true; 
-            }
-
             CharacterProperties _this = (CharacterProperties)__instance;
 
-            _this.libido = 150;
-            _this.personalityType = 30;
-            _this.intelligence = 30;
-            _this.looks = 30;
-            _this.turnOn = 30;
-            _this.penisSize = 30;
-            _this.quirks = 30;
-            _this.sexWithSelf = true;
-            _this.sexWithMen = true;
-            _this.sexWithWomen = true;
-            _this.sexWithMultiple = true;
-            _this.likesBJ = true;
-            _this.likesOral = true;
-            _this.likesTop = true;
-            _this.likesBottom = true;
-            _this.likesLaying = true;
-            _this.likesSitting = true;
-            _this.likesStanding = true;
-            _this.likesBehind = true;
-            _this.likesAnal = true;
-            _this.standardSex = true;
-            _this.lesbianSex = true;
-            _this.soloSex = true;
-            _this.analSex = true;
-            _this.myPersonalityType = 30;
-            _this.myIntelligence = 30;
-            _this.myLooks = 30;
-            _this.myTurnOn = 30;
-            _this.myPenisSize = 30;
-            _this.myAge = 30;
-            _this.mySexualSkill = 100;
-            _this.mySexualExperience = 100;
-            _this.myDesireToPlease = 100;
-            _this.myStamina = 100;
-            _this.myRecoveryTime = 0;
-            _this.compatibilityScore = 100f;
-            ScenePersistent.generalOutputMultiplier = 10;
-            ScenePersistent.climaxBonusMultiplier = 10;
-            ScenePersistent.libidoFactor = 10;
-            _this.orgasmMultiplier = 10;
-            _this.climaxFactor = 10;
+            _this.libido = unlimitedLibido ? 150 : _this.libido;
 
+            if (unlimitedSkillpoints)
+            {
+                _this.personalityType = 30;
+                _this.intelligence = 30;
+                _this.looks = 30;
+                _this.turnOn = 30;
+                _this.penisSize = 30;
+                _this.quirks = 30;
+                _this.sexWithSelf = true;
+                _this.sexWithMen = true;
+                _this.sexWithWomen = true;
+                _this.sexWithMultiple = true;
+                _this.likesBJ = true;
+                _this.likesOral = true;
+                _this.likesTop = true;
+                _this.likesBottom = true;
+                _this.likesLaying = true;
+                _this.likesSitting = true;
+                _this.likesStanding = true;
+                _this.likesBehind = true;
+                _this.likesAnal = true;
+                _this.standardSex = true;
+                _this.lesbianSex = true;
+                _this.soloSex = true;
+                _this.analSex = true;
+                _this.myPersonalityType = 30;
+                _this.myIntelligence = 30;
+                _this.myLooks = 30;
+                _this.myTurnOn = 30;
+                _this.myPenisSize = 30;
+                _this.myAge = 30;
+                _this.mySexualSkill = 100;
+                _this.mySexualExperience = 100;
+                _this.myDesireToPlease = 100;
+                _this.myStamina = 100;
+                _this.myRecoveryTime = 0;
+                _this.compatibilityScore = 100f;
+            }
+
+            if (unlimitedLevel)
+            {
+                ScenePersistent.generalOutputMultiplier = 10;
+                ScenePersistent.climaxBonusMultiplier = 10;
+                ScenePersistent.libidoFactor = 10;
+                _this.orgasmMultiplier = 10;
+                _this.climaxFactor = 10;
+            }
             return true;
         }
 
@@ -715,7 +718,7 @@ namespace PleasurePartyUnlimitedAll
 
         static void _AddMoneyForP2(object __instance)
         {
-            if (!unlimitedGold && !unlimitedLevel && !unlimitedLibido && !unlimitedSkillpoints)
+            if (!unlimitedLibido && !unlimitedSkillpoints)
             {
                 return;
             }
@@ -791,28 +794,94 @@ namespace PleasurePartyUnlimitedAll
 
 
         [HarmonyPatch(typeof(LevelManager), "calculateLevel")] // Specify target method with HarmonyPatch attribute
-        [HarmonyPostfix]                              // There are different patch types. Prefix code runs before original code
-        static void _calculateLevel(object __instance)
+        [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
+        static bool _calculateLevel(object __instance)
         {
             if (!unlimitedLevel)
             {
-                return;
+                return true;
             }
-            AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
+            try
+            {
+                try
+                {
+                    ScenePersistent.myGameData.Level = 30;
+                } catch (Exception ex)
+                {
+                }
+
+                try
+                {
+                    ScenePersistent.nextLevelRequirement = 0;
+                }
+                catch (Exception ex)
+                {
+                }
+
+                try
+                {
+                    ScenePersistent.myGameData.HighestOverallPoints = 90000000;
+                }
+                catch (Exception ex)
+                {
+                }
+
+                /*Logger.LogInfo("my level is now: 30");
+                LevelManager _this = (LevelManager)__instance;
+                Type _thisType = _this.GetType();
+                FieldInfo oldLevelField = _thisType.GetField("oldLevel");
+                FieldInfo myLevelField = _thisType.GetField("myLevel");
+                int oldLevel = (int)oldLevelField.GetValue(_this);
+                int myLevel = (int)myLevelField.GetValue(_this);
+                
+                oldLevel = myLevel;
+                
+                int levelRequirementsLength = _this.levelRequirements == null ? 0 : _this.levelRequirements.Length;
+                
+                oldLevel = myLevel = levelRequirementsLength - 1;
+                
+                if (oldLevel < 0)
+                {
+                    oldLevel = myLevel = 0;
+                }
+                ScenePersistent.myGameData.HighestOverallPoints = -1;
+                for (int index = 0; index < levelRequirementsLength; ++index)
+                {
+                    if (_this.levelRequirements[index] > 0 && _this.levelRequirements[index] > ScenePersistent.myGameData.HighestOverallPoints)
+                    {
+                        ScenePersistent.myGameData.HighestOverallPoints = _this.levelRequirements[index] + 1;
+                    }
+                    _this.levelRequirements[index] = 0;
+                    ScenePersistent.nextLevelRequirement = 0;
+                }
+                oldLevel = myLevel;
+                oldLevelField.SetValue(_this, oldLevel);
+                myLevelField.SetValue(_this, myLevel);
+                Logger.LogInfo("my level is now: " + myLevel.ToString());
+                if (myLevel > 17 && !ScenePersistent.myGameData.completedConclusion && !ScenePersistent.inConclusion)
+                    ScenePersistent.inConclusion = true;
+                ScenePersistent.myGameData.Level = myLevel;
+                ScenePersistent.nextLevelRequirement = 0;*/
+            }
+            catch (Exception e)
+            {
+                Logger.LogInfo("Errror error in calculateLevel");
+                Logger.LogInfo(e.ToString());
+            }
+            return true;
         }
 
         [HarmonyPatch(typeof(Assets.FantasyInventory.Scripts.Interface.Shop), "Buy")] // Specify target method with HarmonyPatch attribute
         [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
         static bool Buy(object __instance)
         {
-            if (!unlimitedGold && !unlimitedLevel)
+            if (!unlimitedGold)
             {
                 return true;
             }
 
             Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             AddMoneyShitForP2(_this, 5000, ItemId.Gold);
-            AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
             //Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             //_this.inventory.Add(new Assets.FantasyInventory.Scripts.Data.Item(Assets.FantasyInventory.Scripts.Enums.ItemId.FruityDrink, 100));
             return true;
@@ -822,14 +891,13 @@ namespace PleasurePartyUnlimitedAll
         [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
         static bool Sell(object __instance)
         {
-            if (!unlimitedGold && !unlimitedLevel)
+            if (!unlimitedGold)
             {
                 return true;
             }
 
             Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             AddMoneyShitForP2(_this, 5000, ItemId.Gold);
-            AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
             //Assets.FantasyInventory.Scripts.Interface.Shop _this = (Assets.FantasyInventory.Scripts.Interface.Shop)__instance;
             //_this.inventory.Add(new Assets.FantasyInventory.Scripts.Data.Item(Assets.FantasyInventory.Scripts.Enums.ItemId.FruityDrink, 100));
             return true;
