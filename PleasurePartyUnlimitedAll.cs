@@ -252,10 +252,28 @@ namespace PleasurePartyUnlimitedAll
                 _this.myStamina = 100;
                 _this.myRecoveryTime = 0;
                 _this.compatibilityScore = 100f;
-                _this.bonusSpectators += 10;
-                _this.bonusGirlsInProximity += 10;
-                _this.bonusConnections += 10;
-                _this.bonusNumberOfPartners += 10;
+                int maxValue = 900000;
+                int add = 10;
+                if (_this.bonusSpectators < maxValue)
+                {
+                    _this.bonusSpectators += add;
+                }  
+                if (_this.bonusGirlsInProximity < maxValue)
+                {
+                    _this.bonusGirlsInProximity += add;
+                }
+                if (_this.bonusConnections < maxValue)
+                {
+                    _this.bonusConnections += add;
+                }
+                if (_this.bonusNumberOfPartners < maxValue)
+                {
+                    _this.bonusNumberOfPartners += add;
+                }
+                if (_this.orgasmCount < maxValue)
+                {
+                    _this.orgasmCount += add;
+                }
                 _this.bonusFavoritePosition = true;
                 _this.bonusSpecialPosition = true;
                 _this.bonusFavoriteType = true;
@@ -266,11 +284,12 @@ namespace PleasurePartyUnlimitedAll
 
             if (unlimitedPleasureOutput)
             {
-                ScenePersistent.generalOutputMultiplier = 10;
-                ScenePersistent.climaxBonusMultiplier = 10;
-                ScenePersistent.libidoFactor = 10;
-                _this.orgasmMultiplier = 10;
-                _this.climaxFactor = 10;
+                int multiplier = 10;
+                ScenePersistent.generalOutputMultiplier = multiplier;
+                ScenePersistent.climaxBonusMultiplier = multiplier;
+                ScenePersistent.libidoFactor = multiplier;
+                _this.orgasmMultiplier = multiplier;
+                _this.climaxFactor = multiplier;
             }
 
             if (allPartyParticipantsAreNaked)
