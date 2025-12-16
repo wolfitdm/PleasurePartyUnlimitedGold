@@ -4,10 +4,12 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.Mono;
+using FIMSpace.FLook;
 using HarmonyLib;
 using System;
 using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace PleasurePartyUnlimitedAll
 {
@@ -21,6 +23,11 @@ namespace PleasurePartyUnlimitedAll
         private ConfigEntry<bool> configUnlimitedLibido;
         private ConfigEntry<bool> configUnlimitedSkillpoints;
         private ConfigEntry<bool> configUnlimitedPeoples;
+        private ConfigEntry<bool> configUnlimitedPleasureOutput;
+        private ConfigEntry<bool> configAllPartyParticipantsAreNaked;
+        private ConfigEntry<bool> configPleasureParty1Only_LooksAndLikesAnyPersonalty;
+        private ConfigEntry<bool> configPleasureParty1only_LikesEverySexPosition;
+        private ConfigEntry<bool> configPleasureParty2only_useCmRootUpdateFix;
         public PleasurePartyUnlimitedAll()
         {
         }
@@ -80,14 +87,23 @@ namespace PleasurePartyUnlimitedAll
         private static bool isP2 = testIsP2();
         private static string pluginKey = "General.Toggles";
 
-        public static int moneyP2_cashVar = 900000;
-        public static float highestOverallPoints = 900000;
+        public static int maxValue = 90000000;
+        public static float maxHpValue = 90000000;
+
+        public static int moneyP2_cashVar = maxValue;
+        public static float highestOverallPoints = maxHpValue;
+        
 
         public static bool unlimitedGold = false;
         public static bool unlimitedLevel = false;
         public static bool unlimitedLibido = false;
         public static bool unlimitedSkillpoints = false;
         public static bool unlimitedPeoples = false;
+        public static bool unlimitedPleasureOutput = false;
+        public static bool allPartyParticipantsAreNaked = false;
+        public static bool pleasureParty1only_looksAndLikesAnyPersonalty = false;
+        public static bool pleasureParty1only_likesEverySexPosition = false;
+        public static bool pleasureParty2only_useCmRootUpdateFix = false;
 
         private void Awake()
         {
@@ -113,20 +129,53 @@ namespace PleasurePartyUnlimitedAll
             configUnlimitedSkillpoints = Config.Bind(pluginKey,
                                                "UnlimitedSkillpoints",
                                                true,
-                                               "Whether or not you want unlimited skillpoints (default true also yes, you want it, and false = no)");
+                                               "Whether or not you want unlimited skillpoints or if you play pleasure party 1 all party participants are full skilled (default true also yes, you want it, and false = no)");
 
             configUnlimitedPeoples = Config.Bind(pluginKey,
                                    "UnlimitedPeoples",
                                    true,
                                    "Whether or not you want unlimited peoples (default true also yes, you want it, and false = no)");
 
+            configUnlimitedPleasureOutput = Config.Bind(pluginKey,
+                       "UnlimitedPleasureOutput",
+                       true,
+                       "Whether or not you want unlimited pleasure output (default true also yes, you want it, and false = no)");
+
+            configAllPartyParticipantsAreNaked = Config.Bind(pluginKey,
+                                                           "AllPartyParticipantsAreNaked",
+                                                            true,
+                                                            "Whether or not you want that all party participants are naked (default true also yes, you want it, and false = no)");
+
+            configPleasureParty1Only_LooksAndLikesAnyPersonalty = Config.Bind(pluginKey,
+                                               "PleasureParty1Only_LooksAndLikesAnyPersonalty",
+                                                true,
+                                                "Whether or not you want that all party participants likes and loves together  (default true also yes, you want it, that all set to any and false = no)");
+
+            configPleasureParty1only_LikesEverySexPosition = Config.Bind(pluginKey,
+                                               "PleasureParty1only_LikesEverySexPosition",
+                                                true,
+                                                "Whether or not you want that all party participants likes and loves every sex position (default true also yes, you want it, and false = no)");
+
+            configPleasureParty2only_useCmRootUpdateFix = Config.Bind(pluginKey,
+                                               "PleasureParty2only_UseCmRootUpdateFix",
+                                                false,
+                                                "Whether or not you want use my cm root update fix in order to prevent a nullpointerreference exception in the bepinex log (default false you do not want use my cm root update fix, you want use the original shit!)"); ;
+
             unlimitedGold = configUnlimitedGold.Value;
             unlimitedLevel = configUnlimitedLevel.Value;
             unlimitedLibido = configUnlimitedLibido.Value;
             unlimitedSkillpoints = configUnlimitedSkillpoints.Value;
             unlimitedPeoples = configUnlimitedPeoples.Value;
+            unlimitedPleasureOutput = configUnlimitedPleasureOutput.Value;
+            allPartyParticipantsAreNaked = configAllPartyParticipantsAreNaked.Value;
+            pleasureParty1only_looksAndLikesAnyPersonalty = configPleasureParty1Only_LooksAndLikesAnyPersonalty.Value;
+            pleasureParty1only_likesEverySexPosition = configPleasureParty1only_LikesEverySexPosition.Value;
+            pleasureParty2only_useCmRootUpdateFix = configPleasureParty2only_useCmRootUpdateFix.Value;
 
             Harmony.CreateAndPatchAll(typeof(PleasurePartyUnlimitedAll));
+
+            PatchHarmonyMethod("SexOutputDisplayManager", "Update", "MoneyOverflow_Update", false, true);
+            PatchHarmonyMethod("SP_P2", "Update", "MoneyOverflow_Update", false, true);
 
             if (!isP2)
             {
@@ -141,6 +190,7 @@ namespace PleasurePartyUnlimitedAll
             //PatchHarmonyMethod("Assets.FantasyInventory.Scripts.Interface.Shop", "Start", "AddMoneyForP2", true, false);
             //PatchHarmonyMethod("Assets.FantasyInventory.Scripts.Interface.Shop", "loadInventory", "loadInventory", true, false);
             PatchHarmonyMethod("CharacterManager_P2", "SaveCharacterData", "_AddMoneyForP2", false, true);
+            PatchHarmonyMethod("CMRoot", "Update", "CMRoot_Update", true, false);
             //PatchHarmonyMethod("MenuManager", "startGame", "exitGame", false, true);
             Logger.LogInfo($"Plugin PleasurePartyUnlimitedAll for p2 is loaded!");
         }
@@ -148,7 +198,7 @@ namespace PleasurePartyUnlimitedAll
 
         public static bool CharacterProperties_Update(object __instance)
         {
-            if (!unlimitedLibido && !unlimitedSkillpoints && !unlimitedLevel)
+            if (!unlimitedLibido && !unlimitedSkillpoints && !pleasureParty1only_looksAndLikesAnyPersonalty && !pleasureParty1only_likesEverySexPosition && !allPartyParticipantsAreNaked)
             {
                 return true;
             }
@@ -157,14 +207,25 @@ namespace PleasurePartyUnlimitedAll
 
             _this.libido = unlimitedLibido ? 150 : _this.libido;
 
-            if (unlimitedSkillpoints)
+            if (pleasureParty1only_looksAndLikesAnyPersonalty)
             {
-                _this.personalityType = 30;
-                _this.intelligence = 30;
-                _this.looks = 30;
-                _this.turnOn = 30;
-                _this.penisSize = 30;
-                _this.quirks = 30;
+                _this.personalityType = 0;
+                _this.intelligence = 0;
+                _this.looks = 0;
+                _this.turnOn = 0;
+                _this.penisSize = 0;
+                _this.quirks = 0;
+                _this.age = 0;
+                _this.myPersonalityType = 0;
+                _this.myIntelligence = 0;
+                _this.myLooks = 0;
+                _this.myTurnOn = 0;
+                _this.myPenisSize = 0;
+                _this.myAge = 0;
+            }
+
+            if (pleasureParty1only_likesEverySexPosition)
+            {
                 _this.sexWithSelf = true;
                 _this.sexWithMen = true;
                 _this.sexWithWomen = true;
@@ -182,21 +243,29 @@ namespace PleasurePartyUnlimitedAll
                 _this.lesbianSex = true;
                 _this.soloSex = true;
                 _this.analSex = true;
-                _this.myPersonalityType = 30;
-                _this.myIntelligence = 30;
-                _this.myLooks = 30;
-                _this.myTurnOn = 30;
-                _this.myPenisSize = 30;
-                _this.myAge = 30;
+            }
+
+            if (unlimitedSkillpoints)
+            {
                 _this.mySexualSkill = 100;
                 _this.mySexualExperience = 100;
                 _this.myDesireToPlease = 100;
                 _this.myStamina = 100;
                 _this.myRecoveryTime = 0;
                 _this.compatibilityScore = 100f;
+                _this.bonusSpectators += 10;
+                _this.bonusGirlsInProximity += 10;
+                _this.bonusConnections += 10;
+                _this.bonusNumberOfPartners += 10;
+                _this.bonusFavoritePosition = true;
+                _this.bonusSpecialPosition = true;
+                _this.bonusFavoriteType = true;
+                _this.bonusPerfectMatch = true;
+                _this.bonusJustChanged = true;
+                _this.haveBonusPosition = true;
             }
 
-            if (unlimitedLevel)
+            if (unlimitedPleasureOutput)
             {
                 ScenePersistent.generalOutputMultiplier = 10;
                 ScenePersistent.climaxBonusMultiplier = 10;
@@ -204,6 +273,12 @@ namespace PleasurePartyUnlimitedAll
                 _this.orgasmMultiplier = 10;
                 _this.climaxFactor = 10;
             }
+
+            if (allPartyParticipantsAreNaked)
+            {
+                _this.outfit = "nude";
+            }
+
             return true;
         }
 
@@ -239,9 +314,9 @@ namespace PleasurePartyUnlimitedAll
 
             moneyP2_cashVar += money;
 
-            if (money > 90000000)
+            if (money > maxValue || money <= 0)
             {
-                moneyP2_cashVar = money = 90000000;
+                moneyP2_cashVar = money = maxValue;
             }
 
             try
@@ -367,9 +442,9 @@ namespace PleasurePartyUnlimitedAll
 
             money += moneyP2_cashVar;
 
-            if (money > 90000000)
+            if (money > maxValue || money <= 0)
             {
-                moneyP2_cashVar = money = 90000000;
+                moneyP2_cashVar = money = maxValue;
             }
 
             try
@@ -494,9 +569,9 @@ namespace PleasurePartyUnlimitedAll
 
             money += moneyP2_cashVar;
 
-            if (money > 90000000)
+            if (money > maxValue || money <= 0)
             {
-                moneyP2_cashVar = money = 90000000;
+                moneyP2_cashVar = money = maxValue;
             }
 
             try
@@ -595,9 +670,9 @@ namespace PleasurePartyUnlimitedAll
 
             hp += highestOverallPoints;
 
-            if (hp > 90000000)
+            if (hp > maxHpValue || hp <= 0)
             {
-                highestOverallPoints = hp = 90000000;
+                highestOverallPoints = hp = maxHpValue;
             }
 
             try
@@ -671,9 +746,11 @@ namespace PleasurePartyUnlimitedAll
 
             // Invoke the private method
             methodInfo.Invoke(obj, parameters);
+
+            AddMoneyShitForP2_Ex(obj, maxValue, ItemId.Gold);
         }
 
-        /*public static void AddMoneyShitForP2_Ex(Assets.FantasyInventory.Scripts.Interface.Shop obj, int value, ItemId currencyId) {
+        public static void AddMoneyShitForP2_Ex(Assets.FantasyInventory.Scripts.Interface.Shop obj, int value, ItemId currencyId) {
 
             ItemContainer _bag = (ItemContainer)obj.Bag;
 
@@ -684,22 +761,25 @@ namespace PleasurePartyUnlimitedAll
                 _bag.Items.ForEach(item => {
                     if (item != null && item.Id == ItemId.Gold)
                     {
-                        item.Count = moneyP2_cashVar;
+                        if (item.Count > maxValue || item.Count <= 0)
+                        {
+                            item.Count = value;
+                        }
                         foundMoney = true;
                     }
                 });
+                foundMoney = true;
                 if (!foundMoney)
                 {
-                    _bag.Items.Insert(0, new Item(ItemId.Gold, moneyP2_cashVar));
+                    _bag.Items.Insert(0, new Assets.FantasyInventory.Scripts.Data.Item(ItemId.Gold, value));
                 }
-                Logger.LogInfo("Add money for p2 really fuck off");
             }
             catch (Exception ex)
             {
                 Logger.LogInfo("Can not add money for p2 really fuck off");
                 Logger.LogInfo(ex.ToString());
             }
-        }*/
+        }
 
 
         static void AddMoneyShitForP2_All(int value)
@@ -714,17 +794,60 @@ namespace PleasurePartyUnlimitedAll
             AddMoneyForP2_ScenePersistent_myGameData_Money(value);
         }
 
+        static FieldInfo getFloatFeld(string name, Type type)
+        {
+            return type.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+
+        static float getFloatValue(FieldInfo field, object __instance = null)
+        {
+            if (field != null)
+            {
+                try
+                {
+                    return (float)field.GetValue(__instance);
+                }
+                catch (Exception e)
+                {
+                    return 0;
+                }
+            } else
+            {
+                return 0;
+            }
+        }
+
+        static void setFloatField(FieldInfo field, float value, object __instance = null)
+        {
+            if (field != null)
+            {
+                try
+                {
+                    field.SetValue(__instance, value);
+                }
+                catch (Exception e)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+
         static void _AddMoneyForP2(object __instance)
         {
-            if (!unlimitedLibido && !unlimitedSkillpoints)
+            if (!unlimitedLibido && !unlimitedSkillpoints && !unlimitedPleasureOutput && !allPartyParticipantsAreNaked)
             {
                 return;
             }
 
             AddMoneyShitForP2_All(5000);
-            AddLevel_ScenePersistent_myGameData_HighestOverallPoints(5000);
+            
+            CharacterManager_P2 _this = (CharacterManager_P2)__instance;
+            Type thisType = _this.GetType();
 
-            CharacterManager_P2 _this = (CharacterManager_P2)__instance;    
             if (unlimitedLibido)
             {
                 if (_this.libido < 100)
@@ -736,6 +859,252 @@ namespace PleasurePartyUnlimitedAll
                 if (_this.skillPoints < 1000)
                     _this.skillPoints = 1000;
             }
+
+            if (unlimitedPleasureOutput)
+            {
+                _this.climaxFactor = 10;
+                _this.climaxBonus = 10;
+                FieldInfo libidoFactorField = getFloatFeld("libidoFactor", thisType);
+                FieldInfo maleMultiplierField = getFloatFeld("maleMultiplier", thisType);
+                FieldInfo skillMultiplierField = getFloatFeld("skillMultiplier", thisType);
+                FieldInfo skillIncreaseFactorField = getFloatFeld("skillIncreaseFactor", thisType);
+                FieldInfo skillBonusAddonField = getFloatFeld("skillBonusAddon", thisType);
+                float libidoFactor = getFloatValue(libidoFactorField, _this);
+                float maleMultiplier = getFloatValue(maleMultiplierField, _this);
+                float skillMultiplier = getFloatValue(skillMultiplierField, _this);
+                float skillIncreaseFactor = getFloatValue(skillIncreaseFactorField, _this);
+                float skillBonusAddon = getFloatValue(skillBonusAddonField, _this);
+                libidoFactor = 10;
+                maleMultiplier = 10;
+                skillMultiplier = 10;
+                skillIncreaseFactor = 10;
+                skillBonusAddon = 10;
+                setFloatField(libidoFactorField, libidoFactor, _this);
+                setFloatField(maleMultiplierField, maleMultiplier, _this);
+                setFloatField(skillMultiplierField, skillMultiplier, _this);
+                setFloatField(skillIncreaseFactorField, skillIncreaseFactor, _this);
+                setFloatField(skillBonusAddonField, skillBonusAddon, _this);
+            }
+
+            if (allPartyParticipantsAreNaked)
+            {
+                try
+                {
+                    for (int index = 0; index < _this.shirt.Length; ++index)
+                        _this.shirt[index].SetActive(false);
+
+                    for (int index = 0; index < _this.pants.Length; ++index)
+                        _this.pants[index].SetActive(false);
+
+                    for (int index = 0; index < _this.shoes.Length; ++index)
+                        _this.shoes[index].SetActive(false);
+
+                    _this.shirtOn = false;
+                    _this.pantsOn = false;
+                    _this.shoesOn = false;
+
+                    int length = _this.selectedClothingArray != null ? _this.selectedClothingArray.Length : 0;
+
+                    if (length > 7)
+                    {
+                        _this.selectedClothingArray[7] = -1;
+                        _this.selectedClothingArray[5] = -1;
+                        _this.selectedClothingArray[4] = -1;
+                    }
+                    else if (length > 5)
+                    {
+                        _this.selectedClothingArray[5] = -1;
+                        _this.selectedClothingArray[4] = -1;
+                    }
+                    else if (length > 4)
+                    {
+                        _this.selectedClothingArray[4] = -1;
+                    }
+
+                    if (!_this.isNew)
+                    {
+                        FieldInfo myCharDataField = thisType.GetField("myCharData", BindingFlags.NonPublic | BindingFlags.Instance);
+                        if (myCharDataField != null)
+                        {
+                            try
+                            {
+                                Classes_P2.characterDataP2 myCharData = (Classes_P2.characterDataP2)myCharDataField.GetValue(_this);
+                                myCharData.shirtOn = false;
+                                myCharData.pantsOn = false;
+                                myCharData.shoesOn = false;
+                                myCharDataField.SetValue(_this, myCharData);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogInfo("Can not set myCharData field");
+                                Logger.LogInfo(ex.ToString());
+                            }
+                        }
+                    } 
+                } catch (Exception ex)
+                {
+                    Logger.LogInfo("Can not set all participants naked");
+                    Logger.LogInfo(ex.ToString());
+                }
+            }
+        }
+
+        public static bool CMRoot_Update(object __instance)
+        {
+            if (!pleasureParty2only_useCmRootUpdateFix)
+            {
+                return true;
+            }
+
+            CMRoot _this = (CMRoot)__instance;
+            Type thisType = _this.GetType();
+            FieldInfo setTimeField = thisType.GetField("setTime", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo lastGoodOneField = thisType.GetField("lastGoodOne", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo doCorrectField = thisType.GetField("doCorrect", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo correctedOneField = thisType.GetField("correctedOne", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo longestDistanceField = thisType.GetField("longestDistance", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo cmTimerField = thisType.GetField("cmTimer", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo myLifeSpanField = thisType.GetField("myLifeSpan", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo lifeTimerField = thisType.GetField("lifeTimer", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo allAdjustedField = thisType.GetField("allAdjusted", BindingFlags.NonPublic | BindingFlags.Instance);
+            float setTime = setTimeField != null ? (float)setTimeField.GetValue(_this) : 0;
+            GameObject lastGoodOne = lastGoodOneField != null ? (GameObject)lastGoodOneField.GetValue(_this) : null;
+            float lifeTimer = lifeTimerField != null ? (float)lifeTimerField.GetValue(_this) : 0;
+            float myLifeSpan = myLifeSpanField != null ? (float)myLifeSpanField.GetValue(_this) : 0;
+            bool allAdjusted = allAdjustedField != null ? (bool)allAdjustedField.GetValue(_this) : false;
+            float longestDistance = longestDistanceField != null ? (float)longestDistanceField.GetValue(_this) : 0;
+            bool doCorrect = doCorrectField != null ? (bool)doCorrectField.GetValue(_this) : false;
+            GameObject correctedOne = correctedOneField != null ? (GameObject)correctedOneField.GetValue(_this) : null;
+            float cmTimer = cmTimerField != null ? (float)cmTimerField.GetValue(_this) : 0;
+            if (_this.imOn && !_this.allStopped)
+            {
+                setTime += Time.deltaTime;
+                if ((double)setTime > 0.20000000298023224)
+                {
+                    for (int index = 0; index < _this.myBones.Length; ++index)
+                    {
+                        if ((bool)(Object)_this.myBones[index] && (bool)(Object)_this.myBones[index].gameObject.GetComponent<Rigidbody>())
+                        {
+                            if (!_this.myBones[index].gameObject.GetComponent<Rigidbody>().isKinematic)
+                            {
+                                Object.Destroy((Object)_this.myBones[index].gameObject.GetComponent<Rigidbody>());
+                                _this.myBones[index].gameObject.GetComponent<CMSticker>().iWasStopped = true;
+                                if ((bool)(Object)lastGoodOne)
+                                {
+                                    _this.myBones[index].gameObject.transform.position = lastGoodOne.transform.position;
+                                    _this.myBones[index].gameObject.transform.rotation = lastGoodOne.transform.rotation;
+                                    _this.myBones[index].gameObject.transform.parent = lastGoodOne.transform.parent;
+                                    _this.myBones[index].gameObject.GetComponent<CMSticker>().iWasPlaced = true;
+                                }
+                                else
+                                    _this.myBones[index].transform.parent = _this.firstBone.transform;
+                            }
+                            else
+                                lastGoodOne = _this.myBones[index].gameObject;
+                        }
+                    }
+                    for (int index = _this.myBones.Length - 1; index > -1; --index)
+                    {
+                        if (_this.myBones[index].gameObject.GetComponent<CMSticker>().iWasStopped && !_this.myBones[index].gameObject.GetComponent<CMSticker>().iWasPlaced)
+                        {
+                            if ((bool)(Object)lastGoodOne)
+                            {
+                                _this.myBones[index].gameObject.transform.position = lastGoodOne.transform.position;
+                                _this.myBones[index].gameObject.transform.rotation = lastGoodOne.transform.rotation;
+                                _this.myBones[index].gameObject.transform.parent = lastGoodOne.transform.parent;
+                                _this.myBones[index].gameObject.GetComponent<CMSticker>().iWasPlaced = true;
+                            }
+                        }
+                        else
+                            lastGoodOne = _this.myBones[index].gameObject;
+                    }
+                    doCorrect = false;
+                    correctedOne = (GameObject)null;
+                    for (int index = _this.myBones.Length - 1; index > -1; --index)
+                    {
+                        if (doCorrect)
+                        {
+                            _this.myBones[index].gameObject.transform.position = correctedOne.transform.position;
+                            _this.myBones[index].gameObject.transform.rotation = correctedOne.transform.rotation;
+                            _this.myBones[index].gameObject.transform.parent = correctedOne.transform.parent;
+                            Debug.Log((object)$"MOVING: {index.ToString()} - {_this.myBones[index].name}");
+                        }
+                        if (index > 0)
+                        {
+                            float num = Vector3.Distance(_this.myBones[index].gameObject.transform.position, _this.myBones[index - 1].gameObject.transform.position);
+                            if ((double)num > (double)longestDistance)
+                                longestDistance = num;
+                            if ((double)num > 0.11999999731779099)
+                            {
+                                doCorrect = true;
+                                correctedOne = _this.myBones[index];
+                            }
+                        }
+                    }
+                    Debug.Log((object)$"LONGEST DISTANCE: {longestDistance.ToString()} - {doCorrect.ToString()}");
+                    _this.allStopped = true;
+                }
+            }
+
+            cmTimer += Time.deltaTime;
+            if ((double)cmTimer > 4.0 && !_this.imOn)
+                Object.Destroy((Object)_this.gameObject);
+
+            bool haveRet = false;
+            
+            if ((double)myLifeSpan <= 0.0)
+            {
+                haveRet = true;
+            }
+
+            if (!haveRet)
+            {
+                lifeTimer += Time.deltaTime;
+                if ((double)lifeTimer <= (double)myLifeSpan)
+                {
+                    haveRet = true;
+                }
+            }
+
+            if (!haveRet)
+            {
+                Object.Destroy((Object)_this.gameObject);
+                for (int index = 0; index < _this.myBones.Length; ++index)
+                    Object.Destroy((Object)_this.myBones[index]);
+                haveRet = true;
+            }
+
+            if (haveRet)
+            {
+                if (setTimeField != null)
+                    setTimeField.SetValue(_this, setTime);
+                
+                if (lastGoodOneField != null)
+                    lastGoodOneField.SetValue(_this, lastGoodOne);
+                
+                if (doCorrectField != null)
+                    doCorrectField.SetValue(_this, doCorrect);
+                
+                if (correctedOneField != null)
+                    correctedOneField.SetValue(_this, correctedOne);
+
+                if (longestDistanceField != null)
+                   longestDistanceField.SetValue(_this, longestDistance);
+
+                if (cmTimerField != null)
+                    cmTimerField.SetValue(_this, cmTimer);
+
+                if (myLifeSpanField != null)
+                    myLifeSpanField.SetValue(_this, myLifeSpan);
+
+                if (lifeTimerField != null)
+                    lifeTimerField.SetValue(_this, lifeTimer);
+
+                if (allAdjustedField != null)
+                    allAdjustedField.SetValue(_this, allAdjusted);
+            }
+
+            return false;
         }
 
         public static void AddMoneyShitForP2(Assets.FantasyInventory.Scripts.Interface.Shop obj, int value, ItemId currencyId)
@@ -789,6 +1158,33 @@ namespace PleasurePartyUnlimitedAll
             //_this.inventory.Add(new Assets.FantasyInventory.Scripts.Data.Item(Assets.FantasyInventory.Scripts.Enums.ItemId.FruityDrink, 100));
             return true;
         }
+
+        static void MoneyOverflow_Update(object __instance)
+        {
+            if (ScenePersistent.myGameData.Money > maxValue)
+            {
+                ScenePersistent.myGameData.Money = maxValue;
+            }
+
+            if (ScenePersistent.myGameData.Money <= 0)
+            {
+                ScenePersistent.myGameData.Money = 0;
+            }
+
+            if (isP2)
+            {
+                if (SP_P2.money > maxValue)
+                {
+                    SP_P2.money = maxValue;
+                }
+
+                if (SP_P2.money <= 0)
+                {
+                    SP_P2.money = 0;
+                }
+            }
+        }
+
 
         [HarmonyPatch(typeof(LevelManager), "Update")] // Specify target method with HarmonyPatch attribute
         [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
@@ -875,7 +1271,7 @@ namespace PleasurePartyUnlimitedAll
         [HarmonyPrefix]
         static bool selectArena(GameObject whichArea, object __instance)
         {
-            if (!unlimitedPeoples)
+            if (!unlimitedPeoples && !allPartyParticipantsAreNaked)
             {
                 return true;
             }
@@ -884,6 +1280,10 @@ namespace PleasurePartyUnlimitedAll
             arenaProperties myProps = whichArea.GetComponent<arenaProperties>();
             myProps.numberOfPeople += 14;
             myProps.specialGirlsOnly = false;
+            if (allPartyParticipantsAreNaked)
+            {
+                myProps.specialNude = true;
+            }
             Type _thisType = (Type)_this.GetType();
             FieldInfo myPropsField = _thisType.GetField("myProps", BindingFlags.NonPublic | BindingFlags.Instance);
             if (myPropsField != null)
@@ -934,7 +1334,7 @@ namespace PleasurePartyUnlimitedAll
 
                 try
                 {
-                    ScenePersistent.myGameData.HighestOverallPoints = 90000000;
+                    ScenePersistent.myGameData.HighestOverallPoints = maxHpValue;
                 }
                 catch (Exception ex)
                 {
