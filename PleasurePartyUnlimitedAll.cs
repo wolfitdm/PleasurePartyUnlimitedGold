@@ -174,12 +174,10 @@ namespace PleasurePartyUnlimitedAll
 
             Harmony.CreateAndPatchAll(typeof(PleasurePartyUnlimitedAll));
 
-            PatchHarmonyMethod("SexOutputDisplayManager", "Update", "MoneyOverflow_Update", false, true);
-            PatchHarmonyMethod("SP_P2", "Update", "MoneyOverflow_Update", false, true);
-
             if (!isP2)
             {
                 PatchHarmonyMethod("CharacterProperties", "Update", "CharacterProperties_Update", true, false);
+                PatchHarmonyMethod("SexOutputDisplayManager", "Update", "MoneyOverflow_Update_P1", false, true);
                 Logger.LogInfo($"Plugin PleasurePartyUnlimitedAll for p1 is loaded!");
                 return;
             }
@@ -191,6 +189,7 @@ namespace PleasurePartyUnlimitedAll
             //PatchHarmonyMethod("Assets.FantasyInventory.Scripts.Interface.Shop", "loadInventory", "loadInventory", true, false);
             PatchHarmonyMethod("CharacterManager_P2", "SaveCharacterData", "_AddMoneyForP2", false, true);
             PatchHarmonyMethod("CMRoot", "Update", "CMRoot_Update", true, false);
+            PatchHarmonyMethod("SP_P2", "Update", "MoneyOverflow_Update_P2", false, true);
             //PatchHarmonyMethod("MenuManager", "startGame", "exitGame", false, true);
             Logger.LogInfo($"Plugin PleasurePartyUnlimitedAll for p2 is loaded!");
         }
@@ -1159,7 +1158,20 @@ namespace PleasurePartyUnlimitedAll
             return true;
         }
 
-        static void MoneyOverflow_Update(object __instance)
+        static void MoneyOverflow_Update_P1(object __instance)
+        {
+            if (ScenePersistent.myGameData.Money > maxValue)
+            {
+                ScenePersistent.myGameData.Money = maxValue;
+            }
+
+            if (ScenePersistent.myGameData.Money <= 0)
+            {
+                ScenePersistent.myGameData.Money = 0;
+            }
+        }
+
+        static void MoneyOverflow_Update_P2(object __instance)
         {
             if (ScenePersistent.myGameData.Money > maxValue)
             {
@@ -1171,20 +1183,16 @@ namespace PleasurePartyUnlimitedAll
                 ScenePersistent.myGameData.Money = 0;
             }
 
-            if (isP2)
+            if (SP_P2.money > maxValue)
             {
-                if (SP_P2.money > maxValue)
-                {
-                    SP_P2.money = maxValue;
-                }
+                SP_P2.money = maxValue;
+            }
 
-                if (SP_P2.money <= 0)
-                {
-                    SP_P2.money = 0;
-                }
+            if (SP_P2.money <= 0)
+            {
+                SP_P2.money = 0;
             }
         }
-
 
         [HarmonyPatch(typeof(LevelManager), "Update")] // Specify target method with HarmonyPatch attribute
         [HarmonyPrefix]                              // There are different patch types. Prefix code runs before original code
